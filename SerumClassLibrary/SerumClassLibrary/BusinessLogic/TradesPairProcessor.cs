@@ -21,23 +21,46 @@ namespace SerumClassLibrary.BusinessLogic
         public List<string> listPairs = new List<string>()
             {"SRMUSDC", "SOLUSDC", "FIDAUSDC", "LINKUSDC", "UNIUSDC"};
 
-        // populated list of pairs (10)
-        // List<TradesPairModel> listTradesPair ...
-
-
         public List<TradesPairModel.Rootobject> listTradesPair = new List<TradesPairModel.Rootobject>();
 
-        private string tradingPairTicker { get; set; }
+        // private string tradingPairTicker { get; set; }
 
-        public async Task GetListOfTradesPairsAsync()
+        // Async method
+        //public async Task GetListOfTradesPairsAsync()
+        //{
+        //    foreach (var pair in listPairs)
+        //    {
+        //        DA_GETTradesPair gtp = new DA_GETTradesPair();
+        //        tradingPairTicker = await gtp.GetTradesPairAsync(pair);
+        //        listTradesPair.Add(GetListOfTradesPairs(tradingPairTicker, pair));
+        //    }
+        //}
+        // Parallel Async method
+        public async Task GetListOfTradesPairsParallelAsync()
         {
+            DA_GETTradesPair gtp = new DA_GETTradesPair();
+            List<Task<string>> tasks = new List<Task<string>>();
+
             foreach (var pair in listPairs)
             {
-                DA_GETTradesPair gtp = new DA_GETTradesPair();
-                tradingPairTicker = await gtp.GetTradesPairAsync(pair);
-                listTradesPair.Add(GetListOfTradesPairs(tradingPairTicker, pair));
+                // making a list of tasks to run
+                tasks.Add(Task.Run(() => gtp.GetTradesPair(pair)));
+            }
+            // result array of all tasks
+            var results = await Task.WhenAll(tasks);
+            foreach (var item in results)
+            {
+                // find pair and trasform it into listPairs equivalent (not the best way to do it, but works for now)
+                int i = item.IndexOf("market");
+                string s = item.Substring(i + 9, 9);
+                int y = s.IndexOf(@"/");
+                s = s.Substring(0, y);
+                s = s + "USDC";
+                // populate list
+                listTradesPair.Add(GetListOfTradesPairs(item, s));
             }
         }
+        
 
         public TradesPairModel.Rootobject GetListOfTradesPairs(string trades, string pair)
         {

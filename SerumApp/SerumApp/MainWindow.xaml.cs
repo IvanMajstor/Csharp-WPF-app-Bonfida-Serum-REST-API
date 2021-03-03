@@ -58,9 +58,13 @@ namespace SerumApp
 
         private async void GetTrades()
         {
+            // var watch = System.Diagnostics.Stopwatch.StartNew();
             List<TradesPairModel.Rootobject> listTpm = new List<TradesPairModel.Rootobject>();
             TradesPairProcessor t = new TradesPairProcessor();
-            await t.GetListOfTradesPairsAsync();
+            await t.GetListOfTradesPairsParallelAsync();
+            // watch.Stop();
+            // var elapsedMs = watch.ElapsedMilliseconds;
+            // MessageBox.Show("Time in ms: " + elapsedMs.ToString());
             listTpm = t.listTradesPair;
             //listTpm = t.GetListOfTradesPairs();
            
