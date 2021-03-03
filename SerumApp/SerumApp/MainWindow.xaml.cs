@@ -40,7 +40,7 @@ namespace SerumApp
         public float F3OldPrice { get { return _f3OldPrice; } set { _f3OldPrice = value; } }
         public float F4OldPrice { get { return _f4OldPrice; } set { _f4OldPrice = value; } }
 
-        private static string _appComponent = "/SerumApp;component/assets/svg/";
+        // private static string _appComponent = "/SerumApp;component/assets/svg/";
         private static string _svgPathIcon;
         public string SvgPathIcon { get { return _svgPathIcon; } set { _svgPathIcon = value; } }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -55,13 +55,18 @@ namespace SerumApp
         {
             GetTrades();
         }
-        private void GetTrades()
+
+        private async void GetTrades()
         {
             List<TradesPairModel.Rootobject> listTpm = new List<TradesPairModel.Rootobject>();
             TradesPairProcessor t = new TradesPairProcessor();
-            listTpm = t.GetListOfTradesPairs();
+            await t.GetListOfTradesPairsAsync();
+            listTpm = t.listTradesPair;
+            //listTpm = t.GetListOfTradesPairs();
            
             TradesPairModel.Rootobject tradePM = new TradesPairModel.Rootobject();
+
+            // so much code bellow, will implement forearch loop later if posible...
 
             // 0
             tradePM = listTpm[0];
@@ -159,4 +164,4 @@ namespace SerumApp
     }
 }
 
-// Kudos for xGromovniKx for giving me his source code to build from :D
+// Kudos to xGromovniKx for giving me his source code to build from :D

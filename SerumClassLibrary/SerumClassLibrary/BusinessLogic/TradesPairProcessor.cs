@@ -23,34 +23,37 @@ namespace SerumClassLibrary.BusinessLogic
 
         // populated list of pairs (10)
         // List<TradesPairModel> listTradesPair ...
-        private List<TradesPairModel.Rootobject> listTradesPair = new List<TradesPairModel.Rootobject>();
 
-        // fighting to implement async so app can be responsive when calls are made...
-        // async method
-        //public async Task<List<TradesPairModel.Rootobject>> GetListOfTradesPairsAsync()
-        //{
-        //    await GetListOfTradesPairs();
 
-        //}
-        // method to pull all trading pairs into listTradesPair
-        public List<TradesPairModel.Rootobject> GetListOfTradesPairs()
+        public List<TradesPairModel.Rootobject> listTradesPair = new List<TradesPairModel.Rootobject>();
+
+        private string tradingPairTicker { get; set; }
+
+        public async Task GetListOfTradesPairsAsync()
         {
-
             foreach (var pair in listPairs)
             {
+                DA_GETTradesPair gtp = new DA_GETTradesPair();
+                tradingPairTicker = await gtp.GetTradesPairAsync(pair);
+                listTradesPair.Add(GetListOfTradesPairs(tradingPairTicker, pair));
+            }
+        }
+
+        public TradesPairModel.Rootobject GetListOfTradesPairs(string trades, string pair)
+        {
 
                 TradesPairModel.Rootobject tpmRoot = new TradesPairModel.Rootobject();
                 tpmRoot.trade = new List<TradesPairModel.Trade>();
 
-                DA_GETTradesPair gtp = new DA_GETTradesPair();
-                string s = gtp.GetTradesPair(pair);
-                JToken jtRootObject = JToken.Parse(s);
+                //DA_GETTradesPair gtp = new DA_GETTradesPair();
+                //string s = GetTradesPair.(pair);
+                JToken jtRootObject = JToken.Parse(trades);
                 List<JToken> jtData = jtRootObject["data"].ToList();
 
                 // popuni osnovni root object
-                tpmRoot.pair = pair;
+                tpmRoot.pair = pair; // to be resolved // resolved
                 tpmRoot.success = Convert.ToBoolean(jtRootObject["success"].ToString());
-                
+
 
                 foreach (JToken jtTrade in jtData)
                 {
@@ -69,10 +72,52 @@ namespace SerumClassLibrary.BusinessLogic
                     tpmRoot.trade.Add(tpmTrade);
                 }
                 // dodaje svaku listu para trejdova u listu 
-                listTradesPair.Add(tpmRoot);
-            }
-            return listTradesPair;
+                //listTradesPair.Add(tpmRoot);
+
+            return tpmRoot;
         }
+
+
+        //public List<TradesPairModel.Rootobject> GetListOfTradesPairs()
+        //{
+
+        //    foreach (var pair in listPairs)
+        //    {
+
+        //        TradesPairModel.Rootobject tpmRoot = new TradesPairModel.Rootobject();
+        //        tpmRoot.trade = new List<TradesPairModel.Trade>();
+
+        //        DA_GETTradesPair gtp = new DA_GETTradesPair();
+        //        string s = gtp.GetTradesPair.(pair);
+        //        JToken jtRootObject = JToken.Parse(s);
+        //        List<JToken> jtData = jtRootObject["data"].ToList();
+
+        //        // popuni osnovni root object
+        //        tpmRoot.pair = pair;
+        //        tpmRoot.success = Convert.ToBoolean(jtRootObject["success"].ToString());
+
+
+        //        foreach (JToken jtTrade in jtData)
+        //        {
+        //            // gde je bio izazov -->
+        //            TradesPairModel.Trade tpmTrade = new TradesPairModel.Trade();
+
+        //            tpmTrade.market = jtTrade["market"].ToString();
+        //            tpmTrade.price = float.Parse(jtTrade["price"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+        //            tpmTrade.size = float.Parse(jtTrade["size"].ToString(), CultureInfo.InvariantCulture.NumberFormat);
+        //            tpmTrade.side = jtTrade["side"].ToString();
+        //            tpmTrade.time = Convert.ToInt64(jtTrade["time"].ToString());
+        //            tpmTrade.orderId = jtTrade["orderId"].ToString();
+        //            tpmTrade.feeCost = float.Parse(jtTrade["feeCost"].ToString());
+        //            tpmTrade.marketAddress = jtTrade["marketAddress"].ToString();
+        //            // dodaje svaki trade u listu trejdova root podklase
+        //            tpmRoot.trade.Add(tpmTrade);
+        //        }
+        //        // dodaje svaku listu para trejdova u listu 
+        //        listTradesPair.Add(tpmRoot);
+        //    }
+        //    return listTradesPair;
+        //}
 
     }
 }
