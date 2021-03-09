@@ -19,7 +19,7 @@ namespace SerumClassLibrary.BusinessLogic
         //private List<string> listPairs = new List<string>()
         //    {"SRMUSDC", "SRMUSDT", "SOLUSDC", "SOLUSDT", "FIDAUSDC", "FIDAUSDT", "LINKUSDC", "LINKUSDT", "UNIUSDC", "UNIUSDT"};
         public List<string> listPairs = new List<string>()
-            {"SRMUSDC", "SOLUSDC", "FIDAUSDC", "LINKUSDC", "UNIUSDC"};
+            {"SRMUSDC", "SOLUSDC", "FIDAUSDC", "LINKUSDC", "BTCUSDC"};
 
         public List<TradesPairModel.Rootobject> listTradesPair = new List<TradesPairModel.Rootobject>();
 
